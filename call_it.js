@@ -1,3 +1,3 @@
-const calc = require ('./calculator');
+const calc = require('./calculator');
 
-return (calc.add(10,29))
+console.log(calc.add(10, 29));
