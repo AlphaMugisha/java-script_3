@@ -1,10 +1,8 @@
 const user = {
     email: "tigerkev07@gmail.com",
     password: "12345678",
-    name: "Kevin",
-    age: 30,
-    country: "USA",
+    status: "active",
 }
 for(const item in user){
-    return (item);
+    console.log(item + ": " + user[item]);
 }
