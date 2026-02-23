@@ -1,25 +1,5 @@
 {
-  "name": "java-script_3",
-  "version": "1.0.0",
-  "description": "This repository contains my JavaScript revision and practice code while learning core and advanced JavaScript concepts.",
-  "main": "calculator.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AlphaMugisha/java-script_3.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/AlphaMugisha/java-script_3/issues"
-  },
-  "homepage": "https://github.com/AlphaMugisha/java-script_3#readme",
   "dependencies": {
-    "express": "^5.2.1",
-    "save": "^2.9.0"
+    "mongoose": "^9.2.1"
   }
 }
