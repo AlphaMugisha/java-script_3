@@ -1,43 +1,19 @@
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const app = express();
-// const port = 3000;
+import express from "express";
+import mongoose from "mongoose";
+import userRoutes from "./routes/user_routes.js";
 
+const app = express();
 
+app.use(express.json());
 
-// mongoose.connect('mongodb://localhost:27017/local', )
-// .then(() =>console.log("conneted"))
-//     .catch((err) => {console.error("connection error", err)});
+// ROUTES
+app.use("/api", userRoutes);
 
-// app.get('/users', (req, res) => {
-//     res.json({message: "server is active"});
-// });
+// DB CONNECT
+mongoose.connect("mongodb://127.0.0.1:27017/shopDB")
+.then(() => console.log("MongoDB connected"))
+.catch(err => console.log(err));
 
-
-// // app.middleware((req, res, next) => {
-// //   console.log(`${req.method} ${req.url}`);
-// //   next();
-// // });
-
-// function logmid(req, res, next) {
-//   console.log(`${req.method} ${req.url}`);
-//   next();
-// }
-
-// app.use(logmid);
-
-// app.get('/users', (req, res) => {
-//   res.send('we are getting all users!');
-// });
-
-// app.listen(port, () => {
-//   console.log(`Server is running on http://localhost:${port}`);
-// });
-
-// app.get('/users', (req, res) => {
-//   res.json({message: "server is active"});
-// }         
-// );
-import connectDB from "./config/db.js";
-connectDB();
- 
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
