@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
-const connectDb = async () => {
-    try {
-    await mongoose.connect('mongodb://localhost:27017/Shop')
-    }catch (err) {
-        console.error("connection error", err);
-        process.exit(1);
-    }
-}
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect("mongodb://127.0.0.1:27017/shop");
+    console.log("MongoDB Connected");
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+
+export default connectDB;

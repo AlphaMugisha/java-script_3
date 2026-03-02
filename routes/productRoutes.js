@@ -30,3 +30,5 @@ router.put("/:id", upload.single("image"), updateProduct);
 router.delete("/:id", deleteProduct);
 
 module.exports = router;
+
+export default router;
