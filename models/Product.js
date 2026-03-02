@@ -1,17 +1,10 @@
-import mongoose from "mongoose";
+// routes/authRoutes.js
+import express from "express";
+import { registerUser, loginUser } from "../controllers/auth_controller.js";
 
-const productSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    description: { type: String },
-    price: { type: Number, required: true },
-    category: { type: String, required: true },
-    stock: { type: Number, default: 0 },
-    image: { type: String }
-  },
-  { timestamps: true }
-);
+const router = express.Router();
 
-const Product = mongoose.model("Product", productSchema);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
-export default Product;
+export default router;

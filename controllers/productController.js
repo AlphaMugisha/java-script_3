@@ -1,87 +1,86 @@
+// controllers/productController.js
 import Product from "../models/Product.js";
 import fs from "fs";
 import path from "path";
 
-// GET ALL PRODUCTS
+// GET all products
 export const getAllProducts = async (req, res) => {
   try {
-    const filter = {};
-    if (req.query.category) filter.category = req.query.category;
+    const { category } = req.query;
+    const filter = category ? { category } : {};
     const products = await Product.find(filter);
     res.status(200).json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// GET SINGLE PRODUCT
+// GET product by ID
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product)
       return res.status(404).json({ message: "Product not found" });
     res.status(200).json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// CREATE PRODUCT
+// CREATE product
 export const createProduct = async (req, res) => {
   try {
     const { name, description = "", price, category, stock = 0 } = req.body;
     if (!name || !price || !category)
       return res.status(400).json({ message: "Missing required fields" });
 
-    let image = "";
-    if (req.file) image = req.file.filename;
+    const image = req.file ? req.file.filename : "";
+    const product = await Product.create({ name, description, price, category, stock, image });
 
-    const product = new Product({ name, description, price, category, stock, image });
-    await product.save();
     res.status(201).json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// UPDATE PRODUCT
+// UPDATE product
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
     const { name, description, price, category, stock } = req.body;
-
-    if (name) product.name = name;
-    if (description !== undefined) product.description = description;
-    if (price !== undefined) product.price = price;
-    if (category) product.category = category;
-    if (stock !== undefined) product.stock = stock;
-
     if (req.file) {
-      // delete old image
+      // remove old image if exists
       if (product.image) fs.unlinkSync(path.join("uploads", product.image));
       product.image = req.file.filename;
     }
 
-    await product.save();
-    res.status(200).json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    product.name = name || product.name;
+    product.description = description || product.description;
+    product.price = price || product.price;
+    product.category = category || product.category;
+    product.stock = stock || product.stock;
+
+    const updatedProduct = await product.save();
+    res.status(200).json(updatedProduct);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// DELETE PRODUCT
+// DELETE product
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
     if (product.image) fs.unlinkSync(path.join("uploads", product.image));
-
     await product.remove();
     res.status(200).json({ message: "Product deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 };
