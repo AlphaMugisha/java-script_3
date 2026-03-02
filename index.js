@@ -5,7 +5,9 @@ const port = 5000;
 
 app.use(express.json());
 
-// In-memory users
+/* ======================
+   USERS (IN MEMORY)
+====================== */
 let users = [];
 
 /* ======================
@@ -60,6 +62,82 @@ app.post("/api/auth/login", (req, res) => {
     message: "Login successful",
     user: { id: user.id, name: user.name, email: user.email }
   });
+});
+
+/* ======================
+   PRODUCTS (IN MEMORY)
+====================== */
+let products = [
+  { id: 1, name: "Milk", category: "Dairy", price: 1000, stock: 10 },
+  { id: 2, name: "Bread", category: "Bakery", price: 500, stock: 5 }
+];
+
+// GET ALL PRODUCTS
+app.get("/api/products", (req, res) => {
+  res.json(products);
+});
+
+// GET ONE PRODUCT
+app.get("/api/products/:id", (req, res) => {
+  const product = products.find(p => p.id == req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  res.json(product);
+});
+
+// CREATE PRODUCT
+app.post("/api/products", (req, res) => {
+  const { name, category, price, stock = 0 } = req.body;
+
+  if (!name || !category || !price) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const newProduct = {
+    id: products.length + 1,
+    name,
+    category,
+    price,
+    stock
+  };
+
+  products.push(newProduct);
+
+  res.status(201).json(newProduct);
+});
+
+// UPDATE PRODUCT
+app.put("/api/products/:id", (req, res) => {
+  const product = products.find(p => p.id == req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  const { name, category, price, stock } = req.body;
+
+  if (name) product.name = name;
+  if (category) product.category = category;
+  if (price) product.price = price;
+  if (stock !== undefined) product.stock = stock;
+
+  res.json(product);
+});
+
+// DELETE PRODUCT
+app.delete("/api/products/:id", (req, res) => {
+  const index = products.findIndex(p => p.id == req.params.id);
+
+  if (index === -1) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  products.splice(index, 1);
+
+  res.json({ message: "Product deleted successfully" });
 });
 
 app.listen(port, () => {
