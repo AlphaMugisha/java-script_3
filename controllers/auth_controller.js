@@ -1,7 +1,8 @@
 import User from "../models/user.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const SECRET = process.env.JWT_SECRET || "mysecret"; // add JWT_SECRET in .env
 
 // REGISTER
 export const registerUser = async (req, res) => {
@@ -9,10 +10,10 @@ export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password)
-      return res.status(400).json({ message: "Missing fields" });
+      return res.status(400).json({ message: "Missing required fields" });
 
-    const userExists = await User.findOne({ email });
-    if (userExists)
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -20,24 +21,22 @@ export const registerUser = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     res.status(201).json({ message: "User registered successfully" });
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // LOGIN
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     if (!email || !password)
-      return res.status(400).json({ message: "Missing fields" });
+      return res.status(400).json({ message: "Missing required fields" });
 
     const user = await User.findOne({ email });
     if (!user)
@@ -47,18 +46,11 @@ export const loginUser = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign(
-      { id: user._id },
-      "yourSecretKey",
-      { expiresIn: "1d" }
-    );
+    const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1d" });
 
-    res.status(200).json({
-      message: "Login successful",
-      token
-    });
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(200).json({ message: "Login successful", token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
