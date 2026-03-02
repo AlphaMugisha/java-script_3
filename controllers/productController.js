@@ -1,122 +1,87 @@
-const Product = require("../models/Product");
-const fs = require("fs");
+import Product from "../models/Product.js";
+import fs from "fs";
+import path from "path";
 
 // GET ALL PRODUCTS
-exports.getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
   try {
     const filter = {};
-
-    if (req.query.category) {
-      filter.category = req.query.category;
-    }
-
+    if (req.query.category) filter.category = req.query.category;
     const products = await Product.find(filter);
     res.status(200).json(products);
-
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch products" });
+    res.status(500).json({ message: error.message });
   }
 };
-
 
 // GET SINGLE PRODUCT
-exports.getProductById = async (req, res) => {
+export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-
-    if (!product) {
+    if (!product)
       return res.status(404).json({ message: "Product not found" });
-    }
-
     res.status(200).json(product);
-
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving product" });
+    res.status(500).json({ message: error.message });
   }
 };
-
 
 // CREATE PRODUCT
-exports.createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, stock } = req.body;
+    const { name, description = "", price, category, stock = 0 } = req.body;
+    if (!name || !price || !category)
+      return res.status(402).json({ message: "Missing required fields" });
 
-    if (!name || !price || !category) {
-      return res.status(400).json({ message: "Name, price and category are required" });
-    }
+    let image = "";
+    if (req.file) image = req.file.filename;
 
-    const image = req.file ? req.file.filename : "";
-
-    const newProduct = new Product({
-      name,
-      description,
-      price,
-      category,
-      stock,
-      image
-    });
-
-    const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
-
+    const product = new Product({ name, description, price, category, stock, image });
+    await product.save();
+    res.status(201).json(product);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create product" });
+    res.status(500).json({ message: error.message });
   }
 };
 
-
 // UPDATE PRODUCT
-exports.updateProduct = async (req, res) => {
+export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
     const { name, description, price, category, stock } = req.body;
 
+    if (name) product.name = name;
+    if (description !== undefined) product.description = description;
+    if (price !== undefined) product.price = price;
+    if (category) product.category = category;
+    if (stock !== undefined) product.stock = stock;
+
     if (req.file) {
-      // delete old image if exists
-      if (product.image) {
-        fs.unlink(`uploads/${product.image}`, () => {});
-      }
+      // delete old image
+      if (product.image) fs.unlinkSync(path.join("uploads", product.image));
       product.image = req.file.filename;
     }
 
-    product.name = name || product.name;
-    product.description = description || product.description;
-    product.price = price || product.price;
-    product.category = category || product.category;
-    product.stock = stock || product.stock;
-
-    const updatedProduct = await product.save();
-    res.status(200).json(updatedProduct);
-
+    await product.save();
+    res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ message: "Failed to update product" });
+    res.status(500).json({ message: error.message });
   }
 };
 
-
 // DELETE PRODUCT
-exports.deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+    if (product.image) fs.unlinkSync(path.join("uploads", product.image));
 
-    if (product.image) {
-      fs.unlink(`uploads/${product.image}`, () => {});
-    }
-
-    await product.deleteOne();
-
+    await product.remove();
     res.status(200).json({ message: "Product deleted successfully" });
-
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete product" });
+    res.status(500).json({ message: error.message });
   }
 };
