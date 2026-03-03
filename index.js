@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import productRoutes from "./routes/productRoutes.js";
-import Product from "../models/Product.js"; // correct
+import Product from './models/Product.js';
 
 dotenv.config(); // load env variables
 
