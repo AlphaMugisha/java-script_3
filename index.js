@@ -13,9 +13,9 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // for form submissions
+app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from /public
+// Serve static files
 app.use(express.static("public"));
 
 // API routes
@@ -24,7 +24,6 @@ app.use("/api/users", userRoutes);
 
 // HTML pages
 app.get("/", (req, res) => {
-  // default page → login
   res.sendFile(process.cwd() + "/public/login.html");
 });
 

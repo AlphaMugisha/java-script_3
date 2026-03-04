@@ -2,53 +2,37 @@
 <html>
 <head>
   <title>Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+<body>
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required /><br/>
+    <input type="password" id="password" placeholder="Password" required /><br/>
+    <button type="submit">Login</button>
+  </form>
+  <p>Don't have an account? <a href="/register">Register here</a></p>
 
-<div class="bg-white p-8 rounded-xl shadow-lg w-96">
-  <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+  <script>
+const form = document.getElementById("loginForm");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  <input id="email" type="email" placeholder="Email"
-    class="w-full border p-3 mb-4 rounded-lg">
-
-  <input id="password" type="password" placeholder="Password"
-    class="w-full border p-3 mb-6 rounded-lg">
-
-  <button onclick="login()"
-    class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700">
-    Login
-  </button>
-
-  <p class="text-center mt-4">
-    No account?
-    <a href="/register.html" class="text-green-600 font-semibold">
-      Register
-    </a>
-  </p>
-</div>
-
-<script>
-async function login() {
   const res = await fetch("/api/users/login", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      email: document.getElementById("email").value,
-      password: document.getElementById("password").value
-    })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
   });
-
   const data = await res.json();
 
-  if (res.ok) {
-    localStorage.setItem("user", data.username);
-    window.location.href = "/dashboard.html";
+  if (res.status === 200) {
+    // Redirect to dashboard.html with username in query string
+    window.location.href = `/dashboard.html?username=${encodeURIComponent(data.username)}`;
   } else {
     alert(data.message);
   }
-}
+});
 </script>
-
 </body>
 </html>
