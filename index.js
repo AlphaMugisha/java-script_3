@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import productRoutes from "./routes/productRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -17,10 +18,16 @@ app.use(express.static("public"));
 
 // routes
 app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
 
 // test route
 app.get("/", (req, res) => {
   res.send("Server running...");
+});
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.sendFile(process.cwd() + "/public/login.html");
 });
 
 mongoose

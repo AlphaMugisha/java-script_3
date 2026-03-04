@@ -1,28 +1,59 @@
 import User from "../models/user.js";
+import bcrypt from "bcryptjs";
 
-// @desc Create/Register a new user
-export const createUser = async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
+// REGISTER
+export const registerUser = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
 
-        // Basic validation
-        if (!username || !email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-
-        const newUser = await User.create({ username, email, password });
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "Missing fields" });
     }
+
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword
+    });
+
+    res.status(201).json({ message: "User registered" });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-// @desc Get all users
-export const getUsers = async (req, res) => {
-    try {
-        const users = await User.find().select("-password"); // Hide passwords for safety
-        res.status(200).json(users);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+// LOGIN
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
     }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    res.status(200).json({
+      message: "Login successful",
+      username: user.username
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
