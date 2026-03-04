@@ -1,86 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Inventory Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="flex flex-col h-screen overflow-hidden bg-gray-100">
 
-<body class="bg-gray-100 min-h-screen flex">
-
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-gray-900 text-white flex flex-col p-6">
-    <h2 class="text-2xl font-bold mb-8">Shop Admin</h2>
-    <nav class="space-y-4">
-      <a href="#" class="block hover:text-green-400">Dashboard</a>
-      <a href="#" class="block text-green-400 font-semibold">Products</a>
-      <a href="#" class="block hover:text-green-400">Users</a>
-    </nav>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <div class="flex-1 p-10">
-
-    <!-- HEADER -->
-    <div class="flex justify-between items-center mb-10">
-      <h1 class="text-3xl font-bold text-gray-800">Product Management</h1>
-      <span class="text-gray-600">Admin Panel</span>
+  <!-- TOP NAV -->
+  <header class="bg-blue-600 h-13 flex items-center px-4 gap-3 flex-shrink-0" style="height:52px;">
+    <div class="flex items-center gap-2 text-white text-xs font-semibold leading-tight">
+      <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM7.2 14.8l.03-.12.9-1.68h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 20 4H5.21l-.94-2H1v2h2l3.6 7.59L5.25 14c-.16.28-.25.61-.25.94C5 16.1 5.9 17 7 17h13v-2H7.42c-.13 0-.22-.11-.22-.2z"/></svg>
+      <span>New Generation<br>Supermarket</span>
     </div>
+    <div class="w-px h-8 bg-white opacity-30 mx-1"></div>
+    <span class="text-white text-sm font-medium">Supermarket App Products Manager</span>
+    <div class="ml-auto flex items-center gap-3">
+      <div class="relative cursor-pointer">
+        <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-blue-600"></span>
+      </div>
+      <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs cursor-pointer">MT</div>
+    </div>
+  </header>
 
-    <div class="grid grid-cols-3 gap-8">
+  <!-- BODY -->
+  <div class="flex flex-1 overflow-hidden">
 
-      <!-- ADD PRODUCT CARD -->
-      <div class="col-span-1 bg-white p-6 rounded-xl shadow-md">
-        <h2 class="text-xl font-semibold mb-6 text-gray-700">
-          Add New Product
-        </h2>
+    <!-- ICON SIDEBAR -->
+    <aside class="w-13 flex flex-col items-center py-3 gap-1 flex-shrink-0" style="width:52px; background:#1e2d40;">
+      <button class="w-10 h-10 rounded-lg flex items-center justify-center text-white bg-white bg-opacity-10">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      </button>
+      <button class="w-10 h-10 rounded-lg flex items-center justify-center text-blue-300 hover:bg-white hover:bg-opacity-10 hover:text-white">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      </button>
+      <button class="w-10 h-10 rounded-lg flex items-center justify-center text-blue-300 hover:bg-white hover:bg-opacity-10 hover:text-white">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </button>
+      <button class="w-10 h-10 rounded-lg flex items-center justify-center text-blue-300 hover:bg-white hover:bg-opacity-10 hover:text-white mt-auto">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+      </button>
+    </aside>
 
-        <div class="space-y-4">
-          <input id="name" placeholder="Product Name"
-            class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
+    <!-- LEFT FORM PANEL -->
+    <aside class="w-72 bg-white border-r border-gray-200 flex flex-col overflow-y-auto flex-shrink-0">
+      <div class="flex items-center justify-between px-4 pt-4 pb-1">
+        <span class="text-sm font-semibold text-gray-800">Product Management</span>
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+      </div>
+      <div class="px-4 pb-3 text-xs font-semibold text-gray-600">Create New Product</div>
 
-          <input id="price" type="number" placeholder="Price"
-            class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
+      <div class="px-4 pb-3">
+        <label class="block text-xs text-gray-500 mb-1">Name (trim: true)</label>
+        <input id="name" placeholder="String (trim: true)"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-gray-400" />
+      </div>
 
-          <input id="stock" type="number" placeholder="Stock"
-            class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
+      <div class="px-4 pb-3">
+        <label class="block text-xs text-gray-500 mb-1">Description (optional)</label>
+        <textarea id="description" placeholder="Description (optional)"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-gray-400 resize-none h-16"></textarea>
+      </div>
 
-          <input id="category" placeholder="Category"
-            class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
-
-          <textarea id="description" placeholder="Description"
-            class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
-
-          <button onclick="addProduct()"
-            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition duration-200">
-            Save Product
-          </button>
+      <div class="px-4 pb-3">
+        <label class="block text-xs text-gray-500 mb-1">Price (RWF)</label>
+        <div class="relative">
+          <input id="price" type="number" placeholder="Number (RWF)"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 text-sm text-gray-700 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-gray-400" />
+          <span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-semibold">RWF</span>
         </div>
       </div>
 
-      <!-- PRODUCT TABLE -->
-      <div class="col-span-2 bg-white p-6 rounded-xl shadow-md">
-        <h2 class="text-xl font-semibold mb-6 text-gray-700">
-          Product List
-        </h2>
+      <div class="px-4 pb-3">
+        <label class="block text-xs text-gray-500 mb-1">Category (e.g., Beverages)</label>
+        <select id="category"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-400 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white">
+          <option value="">Category (e.g., Beverages)</option>
+          <option class="text-gray-700">Beverages</option>
+          <option class="text-gray-700">Fresh Produce</option>
+          <option class="text-gray-700">Dairy</option>
+          <option class="text-gray-700">Bakery</option>
+          <option class="text-gray-700">Snacks</option>
+          <option class="text-gray-700">Household</option>
+        </select>
+      </div>
 
-        <div class="overflow-x-auto">
+      <div class="px-4 pb-4">
+        <label class="block text-xs text-gray-500 mb-1">Stock (quantity)</label>
+        <input id="stock" type="number" placeholder="Number input)"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-gray-400" />
+      </div>
+
+      <div class="px-4 pb-2">
+        <button onclick="addProduct()"
+          class="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-xs tracking-wider py-3 rounded-md transition-colors">
+          CREATE PRODUCT
+        </button>
+      </div>
+      <div class="px-4 pb-4">
+        <button class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold text-xs tracking-wider py-3 rounded-md transition-colors">
+          CANCEL
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4">
+        <h2 class="text-sm font-semibold text-gray-800">Product List (All Categories)</h2>
+        <button class="bg-green-500 hover:bg-green-600 text-white text-xs font-bold tracking-wider px-4 py-2 rounded-md transition-colors">
+          PRODUCT CARD
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-5">
+        <div class="overflow-x-auto bg-white rounded-xl shadow-sm">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b bg-gray-50">
-                <th class="p-3">Name</th>
-                <th class="p-3">Price</th>
-                <th class="p-3">Stock</th>
-                <th class="p-3">Category</th>
+                <th class="px-4 py-3 text-xs font-semibold text-gray-600">Name</th>
+                <th class="px-4 py-3 text-xs font-semibold text-gray-600">Price</th>
+                <th class="px-4 py-3 text-xs font-semibold text-gray-600">Stock</th>
+                <th class="px-4 py-3 text-xs font-semibold text-gray-600">Category</th>
               </tr>
             </thead>
-            <tbody id="productTable" class="divide-y"></tbody>
+            <tbody id="productTable" class="divide-y divide-gray-100"></tbody>
           </table>
         </div>
       </div>
 
-    </div>
+      <div class="flex items-center justify-between px-5 py-3 flex-shrink-0">
+        <span id="pageInfo" class="text-xs text-gray-500"></span>
+        <div id="pagination" class="flex gap-1"></div>
+      </div>
+    </main>
 
   </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-gray-200 py-2 px-5 text-center text-xs text-gray-400 flex-shrink-0">
+    Page 1 of 7 | New Generation Academy | Products CRUD | Instructors: Eric &amp; Emmanuel
+  </footer>
 
 <script>
 async function fetchProducts() {
