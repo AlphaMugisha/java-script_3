@@ -4,32 +4,35 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import productRoutes from "./routes/productRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
+import userRoutes from "./routes/user_routes.js";
 
 dotenv.config();
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // for form submissions
 
-// serve frontend
+// Serve static files from /public
 app.use(express.static("public"));
 
-// routes
+// API routes
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 
-// test route
+// HTML pages
 app.get("/", (req, res) => {
-  res.send("Server running...");
-});
-app.use(express.static("public"));
-
-app.get("/", (req, res) => {
+  // default page → login
   res.sendFile(process.cwd() + "/public/login.html");
 });
 
+app.get("/register", (req, res) => {
+  res.sendFile(process.cwd() + "/public/register.html");
+});
+
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
