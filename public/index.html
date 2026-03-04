@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VeloMarket</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<div class="p-6">
+  <h1 class="text-3xl font-bold mb-6">Inventory Management</h1>
+
+  <div class="grid grid-cols-3 gap-6">
+    
+    <!-- Add Product Form -->
+    <div class="bg-white p-6 rounded shadow col-span-1">
+      <h2 class="text-xl font-semibold mb-4">Add New Product</h2>
+
+      <input id="name" type="text" placeholder="Product Name"
+        class="w-full mb-3 p-2 border rounded">
+
+      <input id="price" type="number" placeholder="Price"
+        class="w-full mb-3 p-2 border rounded">
+
+      <input id="stock" type="number" placeholder="Stock"
+        class="w-full mb-3 p-2 border rounded">
+
+      <input id="category" type="text" placeholder="Category"
+        class="w-full mb-3 p-2 border rounded">
+
+      <textarea id="description" placeholder="Description"
+        class="w-full mb-3 p-2 border rounded"></textarea>
+
+      <button onclick="addProduct()"
+        class="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700">
+        Save Product
+      </button>
+    </div>
+
+    <!-- Product Table -->
+    <div class="bg-white p-6 rounded shadow col-span-2">
+      <table class="w-full table-auto">
+        <thead>
+          <tr class="border-b">
+            <th class="text-left p-2">Product</th>
+            <th class="text-left p-2">Stock</th>
+            <th class="text-left p-2">Price</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_URL = "http://localhost:5000/api/products";
+
+// Fetch products
+async function fetchProducts() {
+  const res = await fetch(API_URL);
+  const products = await res.json();
+
+  const table = document.getElementById("productTable");
+  table.innerHTML = "";
+
+  products.forEach(product => {
+    table.innerHTML += `
+      <tr class="border-b">
+        <td class="p-2">${product.name}</td>
+        <td class="p-2">${product.stock}</td>
+        <td class="p-2">${product.price} RWF</td>
+      </tr>
+    `;
+  });
+}
+
+// Add product
+async function addProduct() {
+  const product = {
+    name: document.getElementById("name").value,
+    price: document.getElementById("price").value,
+    stock: document.getElementById("stock").value,
+    category: document.getElementById("category").value,
+    description: document.getElementById("description").value,
+  };
+const API_URL = "/api/products";
+  await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(product),
+  });
+
+  fetchProducts();
+}
+
+fetchProducts();
+</script>
+
+</body>
+</html>

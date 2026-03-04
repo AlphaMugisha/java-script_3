@@ -12,6 +12,7 @@ export const getAllProducts = async (req, res) => {
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: error.message });
+        console.log("Fetching products...", error.message);
     }
 };
 
