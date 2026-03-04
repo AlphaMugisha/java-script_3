@@ -3,9 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
-import userRoutes from "./routes/user_routes.js";
 
 dotenv.config();
 
@@ -14,24 +12,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Serve frontend
+// serve frontend
 app.use(express.static("public"));
 
-// ✅ Routes
-app.use("/api/auth", authRoutes);
+// routes
 app.use("/api/products", productRoutes);
-app.use("/api/users", userRoutes);
 
-// ✅ Test route
+// test route
 app.get("/", (req, res) => {
-  res.send("Server is running");
+  res.send("Server running...");
 });
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB connected");
+    console.log("MongoDB Connected");
     app.listen(5000, () => {
       console.log("Server running on port 5000");
     });
   })
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
