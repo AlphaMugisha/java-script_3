@@ -1,10 +1,11 @@
 import express from "express";
-import mongoose, { connect } from "mongoose";
+import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/user_routes.js";
+import { swaggerUi, swaggerSpec } from "./swagger.js";
 
 dotenv.config();
 
@@ -22,6 +23,9 @@ app.use(express.static("public"));
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 
+// Swagger docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // HTML pages
 app.get("/", (req, res) => {
   res.sendFile(process.cwd() + "/public/login.html");
@@ -38,6 +42,7 @@ mongoose
     console.log("MongoDB Connected");
     app.listen(5000, () => {
       console.log("Server running on port 5000");
+      console.log("Swagger docs: http://localhost:5000/api-docs");
     });
   })
   .catch((err) => console.log(err));
