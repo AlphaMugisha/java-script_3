@@ -1,15 +1,28 @@
 import express from "express";
-import { registerUser, loginUser, createUser } from "../controllers/user_controllers.js";
+import { getUsers, registerUser } from "../controllers/user_controllers.js";
 
 const router = express.Router();
 
-// Register user
-router.post("/register", registerUser);
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     responses:
+ *       200:
+ *         description: List of users
+ */
+router.get("/", getUsers);
 
-// Login user
-router.post("/login", loginUser);
-
-// Admin/general create user
-router.post("/", createUser);
+/**
+ * @swagger
+ * /api/users:
+ *   post:
+ *     summary: Register a new user
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ */
+router.post("/", registerUser);
 
 export default router;
