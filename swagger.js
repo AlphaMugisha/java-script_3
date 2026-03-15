@@ -15,10 +15,9 @@ const options = {
       },
     ],
   },
-  apis: ["./routes/*.js"],
+  apis: ["./routes/*.js"], // Swagger scans all route files
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
 export { swaggerUi, swaggerSpec };
-apis: ["./routes/*.js"]

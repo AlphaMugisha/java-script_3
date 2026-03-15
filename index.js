@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/user_routes.js";
+import authRoutes from "./routes/authRoutes.js"; // NEW
 import { swaggerUi, swaggerSpec } from "./swagger.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(express.static("public"));
 // API routes
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/auth", authRoutes); // NEW
 
 // Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
