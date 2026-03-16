@@ -1,39 +1,30 @@
 import express from "express";
-import swaggerUi from "swagger-ui-express";
-import swaggerJsDoc from "swagger-jsdoc";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/user_routes.js";
+import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 
+import { swaggerUi, swaggerSpec } from "./swagger.js";
+
+dotenv.config();
+
 const app = express();
+
 app.use(express.json());
 
-// Swagger setup
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Shop API",
-      version: "1.0.0",
-      description: "API documentation for the shop project",
-    },
-    servers: [
-      { url: "http://localhost:5000" },
-    ],
-  },
-  apis: ["./routes/*.js"], // look into all route files
-};
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => console.log(err));
 
-const swaggerSpec = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// Routes
-app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/users", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/auth", authRoutes);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
-  console.log("Swagger docs: http://localhost:5000/api-docs");
 });

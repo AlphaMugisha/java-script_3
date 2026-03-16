@@ -1,52 +1,50 @@
 import User from "../models/user.js";
-import bcrypt from "bcryptjs";
 
-// Get all users
+// GET ALL USERS
 export const getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  const users = await User.find();
+  res.json(users);
 };
 
-// Register a new user
-export const registerUser = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hashedPassword });
-    res.status(201).json({ message: "User registered successfully", user });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+// GET ONE USER
+export const getUserById = async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
   }
+
+  res.json(user);
 };
 
-// Create user (for admin)
+// CREATE USER
 export const createUser = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hashedPassword });
-    res.status(201).json({ message: "User created successfully", user });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  const user = await User.create(req.body);
+  res.status(201).json(user);
 };
 
-// Login user
-export const loginUser = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+// UPDATE USER
+export const updateUser = async (req, res) => {
+  const updated = await User.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Wrong password" });
-
-    res.status(200).json({ message: "Login successful" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (!updated) {
+    return res.status(404).json({ message: "User not found" });
   }
+
+  res.json(updated);
+};
+
+// DELETE USER
+export const deleteUser = async (req, res) => {
+  const deleted = await User.findByIdAndDelete(req.params.id);
+
+  if (!deleted) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json({ message: "User deleted successfully" });
 };

@@ -1,29 +1,56 @@
 import Product from "../models/Product.js";
 
-// GET all products
+// GET ALL PRODUCTS
 export const getProducts = async (req, res) => {
   const products = await Product.find();
   res.json(products);
 };
 
-// CREATE product
+// GET ONE PRODUCT
+export const getProductById = async (req, res) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  res.json(product);
+};
+
+// CREATE PRODUCT
 export const createProduct = async (req, res) => {
-  const { name, price } = req.body;
+  const { name, price, stock, category, description } = req.body;
 
   const product = new Product({
     name,
     price,
+    stock,
+    category,
+    description,
   });
 
   const savedProduct = await product.save();
   res.status(201).json(savedProduct);
 };
 
-// DELETE product
-export const deleteProduct = async (req, res) => {
-  const { id } = req.params;
+// UPDATE PRODUCT
+export const updateProduct = async (req, res) => {
+  const updated = await Product.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
 
-  const deleted = await Product.findByIdAndDelete(id);
+  if (!updated) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  res.json(updated);
+};
+
+// DELETE PRODUCT
+export const deleteProduct = async (req, res) => {
+  const deleted = await Product.findByIdAndDelete(req.params.id);
 
   if (!deleted) {
     return res.status(404).json({ message: "Product not found" });
