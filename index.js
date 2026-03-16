@@ -5,6 +5,10 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/user_routes.js";
 import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+// index.js
+import app from "./app.js";
+
+app.listen(5000, () => console.log("Server running on port 5000"));
 
 import { swaggerUi, swaggerSpec } from "./swagger.js";
 
