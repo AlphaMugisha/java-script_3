@@ -1,50 +1,39 @@
 import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsDoc from "swagger-jsdoc";
 
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/user_routes.js";
-import authRoutes from "./routes/authRoutes.js"; // NEW
-import { swaggerUi, swaggerSpec } from "./swagger.js";
-
-dotenv.config();
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
-
-// Middleware
-app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Serve static files
-app.use(express.static("public"));
+// Swagger setup
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Shop API",
+      version: "1.0.0",
+      description: "API documentation for the shop project",
+    },
+    servers: [
+      { url: "http://localhost:5000" },
+    ],
+  },
+  apis: ["./routes/*.js"], // look into all route files
+};
 
-// API routes
-app.use("/api/products", productRoutes);
-app.use("/api/users", userRoutes);
-app.use("/auth", authRoutes); // NEW
-
-// Swagger docs
+const swaggerSpec = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// HTML pages
-app.get("/", (req, res) => {
-  res.sendFile(process.cwd() + "/public/login.html");
-});
+// Routes
+app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/users", authRoutes);
 
-app.get("/register", (req, res) => {
-  res.sendFile(process.cwd() + "/public/register.html");
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
+  console.log("Swagger docs: http://localhost:5000/api-docs");
 });
-
-// MongoDB connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB Connected");
-    app.listen(5000, () => {
-      console.log("Server running on port 5000");
-      console.log("Swagger docs: http://localhost:5000/api-docs");
-    });
-  })
-  .catch((err) => console.log(err));

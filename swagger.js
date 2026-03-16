@@ -1,7 +1,6 @@
-import swaggerJsdoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
+import swaggerJsDoc from "swagger-jsdoc";
 
-const options = {
+const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
@@ -15,9 +14,7 @@ const options = {
       },
     ],
   },
-  apis: ["./routes/*.js"], // Swagger scans all route files
+  apis: ["./routes/*.js"], // your route files
 };
 
-const swaggerSpec = swaggerJsdoc(options);
-
-export { swaggerUi, swaggerSpec };
+export const swaggerSpec = swaggerJsDoc(swaggerOptions);

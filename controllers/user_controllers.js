@@ -1,54 +1,52 @@
-import express from "express";
-import { registerUser, loginUser, getUsers, createUser } from "../controllers/user_controllers.js";
+import User from "../models/user.js";
+import bcrypt from "bcryptjs";
 
-const router = express.Router();
+// Get all users
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-/**
- * @swagger
- * /auth/register:
- *   post:
- *     summary: Register a new user
- *     description: Creates a new user account
- *     responses:
- *       201:
- *         description: User registered successfully
- */
-router.post("/register", registerUser);
+// Register a new user
+export const registerUser = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ username, password: hashedPassword });
+    res.status(201).json({ message: "User registered successfully", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-/**
- * @swagger
- * /auth/login:
- *   post:
- *     summary: Login user
- *     description: Logs a user into the system
- *     responses:
- *       200:
- *         description: Login successful
- */
-router.post("/login", loginUser);
+// Create user (for admin)
+export const createUser = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ username, password: hashedPassword });
+    res.status(201).json({ message: "User created successfully", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-/**
- * @swagger
- * /api/users:
- *   get:
- *     summary: Get all users
- *     description: Returns a list of users
- *     responses:
- *       200:
- *         description: List of users
- */
-router.get("/", getUsers);
+// Login user
+export const loginUser = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-/**
- * @swagger
- * /api/users:
- *   post:
- *     summary: Create user (admin)
- *     description: Creates a new user
- *     responses:
- *       201:
- *         description: User created successfully
- */
-router.post("/", createUser);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Wrong password" });
 
-export default router;
+    res.status(200).json({ message: "Login successful" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
