@@ -1,21 +1,21 @@
 // app.js
 import express from "express";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-import userRoutes from "./routes/usersRoutes.js";
-import productRoutes from "./routes/productsRoutes.js";
-
-dotenv.config();
+import userRoutes from "./routes/user_routes.js";
+import productRoutes from "./routes/productRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import { swaggerUi, swaggerSpec } from "./swagger.js";
 
 const app = express();
+
+// Body parser
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
-
+// Routes
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/auth", authRoutes);
+
+// Swagger Docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;
